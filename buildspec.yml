@@ -36,8 +36,8 @@ phases:
       #- docker push $REPOSITORY_URI:latest
       - docker push $REPOSITORY_URI:$IMAGE_TAG
       - echo Writing image definitions file...
-      #- printf '[{"name":"dotnet-api","imageUri":"%s"}]' $REPOSITORY_URI:latest > imagedefinitions.json
-      - printf '{"Image":"%s:%s"}' $REPOSITORY_URI $IMAGE_TAG > imagedefinitions.json
+      - printf '[{"name":"dotnet-api","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
+      #- printf '{"Image":"%s:%s"}' $REPOSITORY_URI $IMAGE_TAG > imagedefinitions.json
       #- aws ecs run-task --launch-type FARGATE --cluster ${cluster_name} --task-definition taskdef --network-configuration "awsvpcConfiguration={subnets=[${subnet_id}],securityGroups=[${security_group_ids}]}"
 artifacts:
     files: imagedefinitions.json
