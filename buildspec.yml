@@ -17,7 +17,8 @@ phases:
       - cd aws_fargate_api/
       - echo Building the Docker image... 
       - docker build -t dotnet-my-api-new .
-      - docker tag dotnet-my-api-new:latest $REPOSITORY_URI:$IMAGE_TAG
+      #- docker tag dotnet-my-api-new:latest $REPOSITORY_URI:$IMAGE_TAG
+      - docker tag dotnet-my-api-new:latest $REPOSITORY_URI:latest
   post_build:
     commands:
       - echo Build completed on `date`
