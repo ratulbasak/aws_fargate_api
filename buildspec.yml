@@ -1,13 +1,22 @@
 version: 0.2
 
+env:
+  variables:
+    # S3_BUCKET: ""
+    PACKAGE: "github.com/aws-samples/lambda-go-samples"
+    AWS_DEFAULT_REGION: "us-east-1"
+    REPOSITORY_URI: "500986409600.dkr.ecr.us-east-1.amazonaws.com/dotnet-my-api-new"
+    # cluster_name: "cluster"
+    # subnet_id: ""
+    # security_group_ids: ""
+
+
 phases:
   pre_build:
     commands:
       - echo Logging in to Amazon ECR...
       - aws --version
-      - AWS_DEFAULT_REGION=us-east-1
       - $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
-      - REPOSITORY_URI=500986409600.dkr.ecr.us-east-1.amazonaws.com/dotnet-my-api-new
       - IMAGE_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | head -c 8) # cut -c 1-7)
   build:
     commands:
@@ -15,7 +24,7 @@ phases:
       #- git clone https://github.com/ratulbasak/aws_fargate_api.git
       #- pwd
       #- cd aws_fargate_api/
-      - echo Building the Docker image... 
+      - echo Building the Docker image...
       #- docker build -t dotnet-my-api-new .
       - docker build --tag $REPOSITORY_URI:$IMAGE_TAG .
       #- docker tag dotnet-my-api-new:latest $REPOSITORY_URI:$IMAGE_TAG
@@ -29,5 +38,6 @@ phases:
       - echo Writing image definitions file...
       #- printf '[{"name":"dotnet-api","imageUri":"%s"}]' $REPOSITORY_URI:latest > imagedefinitions.json
       - printf '{"Image":"%s:%s"}' $REPOSITORY_URI $IMAGE_TAG > imagedefinitions.json
+      #- aws ecs run-task --launch-type FARGATE --cluster ${cluster_name} --task-definition taskdef --network-configuration "awsvpcConfiguration={subnets=[${subnet_id}],securityGroups=[${security_group_ids}]}"
 artifacts:
     files: imagedefinitions.json
